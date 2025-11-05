@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Game - Home</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div th:replace="fragments/layout :: menu-sidebar"></div>
+
+<!-- Conteúdo -->
+<div class="main-content p-3 mb-2 bg-dark text-white">
+    <div class="header-space"></div>
+    <div th:replace="fragments/layout :: header"></div>
+
+    <h1>Bem-vindo ao jogo de dados 🎲</h1>
+    <p>Aposte, jogue e divirta-se!</p>
+
+    <div th:replace="fragments/layout :: footer"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

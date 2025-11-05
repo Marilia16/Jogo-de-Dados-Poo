@@ -1,0 +1,17 @@
+body {
+    display: flex;
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+/* Espaço reservado pra sidebar */
+.main-content {
+    margin-left: 280px;
+    padding: 2rem;
+    width: calc(100% - 280px);
+}
+
+/* Espaço para o header fixo */
+.header-space {
+    height: 70px;
+}
