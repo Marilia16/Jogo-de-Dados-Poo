@@ -35,4 +35,4 @@ Atividade feita para a disciplina de programação orientada a objetos em 2025 p
 
 ## Diagrama de Relacionamento do banco de dados
 
-![Diagrama de Relacionamento](Docs/diagramaderelacionamento.png)
+![Diagrama de Relacionamento](Docs/Diagrama_de_Relacionamento.png)
