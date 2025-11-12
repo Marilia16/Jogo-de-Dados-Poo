@@ -1,17 +1,122 @@
+/* ===== Layout principal (dark) ===== */
 body {
     display: flex;
     min-height: 100vh;
-    background: #f8f9fa;
+    margin: 0;
+    background-color: #0d1117; /* Fundo escuro principal */
+    color: #e6eef3;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-/* Espaço reservado pra sidebar */
+/* ===== Sidebar ===== */
+.sidebar {
+    background-color: #0d1117 !important;
+    padding-top: 1rem;
+}
+
+.sidebar .nav-link {
+    color: #c9d1d9;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: #161b22;
+    border-radius: 8px;
+}
+
+/* ===== Header ===== */
+.header {
+    height: 70px;
+    background-color: #0d1117 !important;
+    border-bottom: 1px solid #21262d;
+    display: flex;
+    align-items: center;
+}
+
+/* Campo de busca */
+.form-control.form-control-dark {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    color: #e6eef3;
+}
+
+/* Botão */
+.btn-outline-light {
+    border-color: #e6eef3;
+    color: #e6eef3;
+}
+
+/* ===== Conteúdo principal ===== */
 .main-content {
     margin-left: 280px;
     padding: 2rem;
     width: calc(100% - 280px);
+    padding-bottom: 80px;
+    background-color: #0d1117; /* Garante fundo escuro no conteúdo também */
 }
 
-/* Espaço para o header fixo */
 .header-space {
     height: 70px;
+}
+
+/* ===== Cartões e áreas internas ===== */
+.card {
+    background-color: #161b22;
+    color: #e6eef3;
+    border: 1px solid #30363d;
+}
+
+.alert {
+    background-color: #161b22;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+}
+
+/* ===== Footer ===== */
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 280px;
+    right: 0;
+    height: 60px;
+    background-color: #0d1117;
+    color: #c9d1d9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid #21262d;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.6);
+    z-index: 1030;
+    font-size: 0.95rem;
+}
+
+/* Botão primário */
+.btn-primary {
+    background-color: #1f6feb;
+    border-color: #1f6feb;
+}
+
+.btn-primary:hover {
+    background-color: #388bfd;
+    border-color: #388bfd;
+}
+
+/* Botão warning */
+.btn-warning {
+    background-color: #e6b042;
+    border-color: #e6b042;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .sidebar { width: 220px; }
+    .main-content { margin-left: 220px; width: calc(100% - 220px); }
+    .footer { left: 220px; }
+}
+
+@media (max-width: 768px) {
+    .sidebar { position: fixed; width: 100%; height: auto; top: 0; left: 0; }
+    .main-content { margin-left: 0; width: 100%; padding-top: 120px; }
+    .header { left: 0; right: 0; }
+    .footer { left: 0; right: 0; }
 }
