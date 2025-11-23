@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Aposta</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #1c1c1c;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 450px;
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.6);
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            background: #3a3a3a;
+            color: white;
+            font-size: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            background-color: #4caf50;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background-color: #46a049;
+        }
+
+        .cancel {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #cccccc;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .cancel:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Editar Aposta</h2>
+
+    <form th:action="@{'/bets/' + ${bet.id} + '/edit'}" method="post">
+        <label for="name">Nome da Aposta</label>
+        <input type="text" id="name" name="name" th:value="${bet.name}" required>
+
+        <button type="submit" class="btn">Salvar Alterações</button>
+    </form>
+
+    <a th:href="@{'/bets'}" class="cancel">Cancelar e voltar</a>
+</div>
+
+</body>
+</html>

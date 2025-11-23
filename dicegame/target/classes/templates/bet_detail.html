@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${bet.name} ?: 'Detalhe da Aposta'">Detalhe</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div th:replace="fragments/layout :: menu-sidebar"></div>
+
+<!-- Conteúdo principal -->
+<div class="main-content">
+
+    <div th:replace="fragments/layout :: header"></div>
+    <div style="height:70px;"></div>
+
+    <main class="container mt-4">
+
+        <h2 th:text="${bet.name}">Aposta</h2>
+
+        <!-- ============ RESULTADO DA APOSTA ============ -->
+        <div th:if="${betResult != null}" class="card bg-success-subtle p-4 mb-4 border-success">
+
+            <h3 class="text-success">🎉 Aposta Finalizada!</h3>
+            <hr>
+
+            <div class="row">
+
+                <!-- Soma dos dados -->
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Soma dos Dados:</strong>
+                        <span class="badge bg-success fs-5" th:text="${betResult.finalSum}">7</span>
+                    </p>
+                </div>
+
+                <!-- Caso tenha vencedores -->
+                <div class="col-md-6"
+                     th:if="${betResult.winners != null and !betResult.winners.isEmpty()}">
+                    <p><strong>Vencedores:</strong></p>
+
+                    <ul>
+                        <li th:each="w : ${betResult.winners}"
+                            th:text="${w.name}">
+                        </li>
+                    </ul>
+
+                    <p>
+                        <strong>Valor por vencedor:</strong>
+                        <span class="badge bg-primary"
+                              th:text="${#numbers.formatDecimal(betResult.winAmount, 1, 'POINT', 2, 'POINT')}">
+                            0.00
+                        </span>
+                    </p>
+                </div>
+
+                <!-- Caso ninguém tenha acertado -->
+                <div class="col-md-6"
+                     th:if="${betResult.winners == null or betResult.winners.isEmpty()}">
+                    <p class="mb-1 text-danger">
+                        <strong>Nenhum participante acertou o número.</strong><br>
+                        Todos perderam o valor apostado.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============ LISTA DE PARTICIPANTES ============ -->
+        <p class="mt-4 mb-2"><strong>Participantes:</strong></p>
+
+        <ul class="list-group">
+            <li class="list-group-item bg-dark text-white border-secondary"
+                th:each="g : ${gambles}">
+                <span th:text="${g.user.name}"></span>
+                →
+                <span th:text="${g.valueGuess}"></span>
+                /
+                R$
+                <span th:text="${g.valueMoney}"></span>
+            </li>
+        </ul>
+
+        <!-- ============ FORM APOSTAR ============ -->
+        <div sec:authorize="isAuthenticated()" class="mt-4">
+            <form th:action="@{'/gamble/' + ${bet.id} + '/lance'}"
+                  method="post"
+                  th:unless="${bet.finalized}">
+
+                <div class="mb-2">
+                    <label>Palpite (2-12)</label>
+                    <input class="form-control" type="number" name="valueGuess" min="2" max="12" required/>
+                </div>
+
+                <div class="mb-2">
+                    <label>Valor</label>
+                    <input class="form-control" type="number" name="valueMoney" min="1" step="0.01" required/>
+                </div>
+
+                <button class="btn btn-warning w-100">Apostar</button>
+            </form>
+        </div>
+
+        <!-- ============ AÇÕES DO CRIADOR ============ -->
+        <div class="mt-5 p-3 border rounded">
+
+            <div th:if="${currentUserEntity != null and currentUserEntity.id == bet.user.id}">
+                <h4 class="mb-3">Ações do Criador</h4>
+
+                <form th:action="@{'/bets/' + ${bet.id} + '/finalize'}"
+                      method="post"
+                      th:unless="${bet.finalized}">
+
+                    <p class="text-warning">
+                        Ao finalizar a aposta, os resultados serão calculados.
+                    </p>
+
+                    <button type="submit" class="btn btn-danger w-100">
+                        Finalizar Aposta
+                    </button>
+                </form>
+
+                <div th:if="${bet.finalized}" class="alert alert-success mt-3">
+                    Esta aposta foi <strong>FINALIZADA</strong>.
+                </div>
+            </div>
+
+            <!-- mensagens finais -->
+            <div th:if="${param.success != null and param.success[0] == 'finalized'}"
+                 class="alert alert-success mt-3">
+                Aposta finalizada com sucesso!
+            </div>
+
+            <div th:if="${param.error != null and param.error[0] == 'alreadyFinalized'}"
+                 class="alert alert-info mt-3">
+                A aposta já havia sido finalizada anteriormente.
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/layout :: footer"></div>
+
+<!-- ===================================== -->
+<!-- ============= MODAL ERRO ============ -->
+<!-- ===================================== -->
+<div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Erro ao Finalizar Aposta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>❌ A aposta exige no mínimo <strong>2 participantes</strong>.</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script para abrir o popup automaticamente -->
+<script th:if="${param.error != null and param.error[0] == 'minimum_participants'}">
+    const modal = new bootstrap.Modal(document.getElementById('errorModal'));
+    modal.show();
+</script>
+
+</body>
+</html>
