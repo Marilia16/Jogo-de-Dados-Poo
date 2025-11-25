@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Bets</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- CSS principal -->
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+</head>
+<body class="bg-dark text-white">
+
+<!-- Sidebar -->
+<div th:replace="fragments/layout :: menu-sidebar"></div>
+
+<!-- Main content -->
+<div class="main-content">
+    <!-- Header -->
+    <div th:replace="fragments/layout :: header"></div>
+
+    <div class="header-space"></div>
+
+    <main class="container">
+
+        <section class="text-center mb-5">
+            <h1 class="fw-bold text-white mb-3">🎲 Suas Apostas</h1>
+            <p class="text-secondary mb-4">Visualize, gerencie e acompanhe suas apostas.</p>
+
+            <div>
+                <a th:href="@{/bets/new}" class="btn btn-primary me-2">Nova Aposta</a>
+                <a th:href="@{/values}" class="btn btn-outline-light">Histórico</a>
+            </div>
+        </section>
+
+        <!-- NAV DAS ABAS -->
+        <ul class="nav nav-tabs mb-4" id="betsTabs" role="tablist">
+
+            <!-- Aba Abertas -->
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="abertas-tab" data-bs-toggle="tab"
+                        data-bs-target="#abertas" type="button" role="tab">
+                    Abertas
+                </button>
+            </li>
+
+            <!-- Aba Finalizadas -->
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="finalizadas-tab" data-bs-toggle="tab"
+                        data-bs-target="#finalizadas" type="button" role="tab">
+                    Finalizadas
+                </button>
+            </li>
+
+        </ul>
+
+        <!-- CONTEÚDO DAS ABAS -->
+        <div class="tab-content" id="betsTabsContent">
+
+            <!-- ----------- ABA: Abertas ----------- -->
+            <div class="tab-pane fade show active" id="abertas" role="tabpanel">
+
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+
+                    <div class="col" th:each="bet : ${openBets}">
+                        <div class="card shadow-sm border-0 bg-secondary bg-opacity-25 text-white">
+                            <img th:src="@{/img/rolling-dice.gif}" class="card-img-top" alt="Dice" height="200"
+                                 style="object-fit: cover;">
+                            <div class="card-body">
+                                <p class="card-text fw-bold" th:text="${bet.name}">Nome da aposta</p>
+
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <div class="btn-group">
+                                        <a th:href="@{'/bets/' + ${bet.id}}" class="btn btn-sm btn-outline-light">Ver</a>
+                                        <div th:if="${bet.user.id == currentUserEntity.id}">
+                                            <a th:href="@{/bets/{id}/edit(id=${bet.id})}" class="btn btn-warning btn-sm">Editar</a>
+                                        </div>
+
+                                </div>
+
+
+                                    <small class="text-muted"
+                                           th:text="${#temporals.format(bet.createdAt,'HH:mm dd/MM/yyyy')}">
+                                        Data
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Caso vazio -->
+                <div th:if="${#lists.isEmpty(openBets)}"
+                     class="d-flex justify-content-center align-items-center flex-column"
+                     style="min-height: 40vh;">
+                    <div class="alert text-center p-4 fs-5 shadow-sm w-75 mx-auto"
+                         style="background-color:#161b22; border:1px solid #30363d; color:#c9d1d9;">
+                        🔓 Nenhuma aposta aberta.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ----------- ABA: Finalizadas ----------- -->
+            <div class="tab-pane fade" id="finalizadas" role="tabpanel">
+
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+
+                    <div class="col" th:each="bet : ${closedBets}">
+                        <div class="card shadow-sm border-0 bg-secondary bg-opacity-25 text-white">
+                            <img th:src="@{/img/rolling-dice.gif}" class="card-img-top" alt="Dice" height="200"
+                                 style="object-fit: cover;">
+                            <div class="card-body">
+
+                                <p class="card-text fw-bold" th:text="${bet.name}">Nome da aposta</p>
+
+                                <span class="badge"
+                                      th:classappend="${bet.profit > 0} ? 'bg-success' : 'bg-danger'"
+                                      th:text="${bet.profit > 0 ? '+ R$' + bet.profit : '- R$' + bet.loss}">
+                                </span>
+
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <div class="btn-group">
+                                        <a th:href="@{|/bets/${bet.id}|}" class="btn btn-sm btn-outline-light">Ver</a>
+                                    </div>
+
+                                    <small class="text-muted"
+                                           th:text="${#temporals.format(bet.closedAt,'HH:mm dd/MM/yyyy')}">
+                                        Data
+                                    </small>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Caso vazio -->
+                <div th:if="${#lists.isEmpty(closedBets)}"
+                     class="d-flex justify-content-center align-items-center flex-column"
+                     style="min-height: 40vh;">
+                    <div class="alert text-center p-4 fs-5 shadow-sm w-75 mx-auto"
+                         style="background-color:#161b22; border:1px solid #30363d; color:#c9d1d9;">
+                        ✔️ Nenhuma aposta finalizada.
+                    </div>
+                </div>
+
+            </div>
+
+        </div><!-- tabs content -->
+
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/layout :: footer"></div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

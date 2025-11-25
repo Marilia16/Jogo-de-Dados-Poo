@@ -1,0 +1,13 @@
+package com.marilia16.dicegame.repository;
+
+import com.marilia16.dicegame.model.BetResult;
+import com.marilia16.dicegame.model.Bet;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface BetResultRepository extends JpaRepository<BetResult, Long> {
+    Optional<BetResult> findByBet(Bet bet);
+}
