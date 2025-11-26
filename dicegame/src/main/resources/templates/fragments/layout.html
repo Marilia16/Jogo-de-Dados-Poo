@@ -84,16 +84,6 @@
             style="left:280px; right:0; z-index:1030; background-color:#0d1117;">
         <div class="container-fluid d-flex align-items-center justify-content-between position-relative">
 
-            <form class="d-flex" role="search"
-                  th:if="${currentPath != null and currentPath == '/bets'}"
-                  style="max-width: 300px;">
-                <input type="search" class="form-control form-control-dark me-2"
-                       placeholder="Buscar apostas..." aria-label="Search">
-                <button class="btn btn-outline-light d-flex align-items-center" type="submit">
-                    <i class="bi bi-search me-1"></i> Buscar
-                </button>
-            </form>
-
             <div class="d-flex ms-auto" style="position: absolute; right: 20px; top:50%; transform: translateY(-50%);">
 
                 <span sec:authorize="!isAuthenticated()">
