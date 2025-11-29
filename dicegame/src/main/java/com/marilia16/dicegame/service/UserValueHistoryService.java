@@ -27,6 +27,7 @@ public class UserValueHistoryService {
         h.setNewValue(newValue);
         h.setReason(reason);
         h.setChangedAt(LocalDateTime.now());
+        h.setDiff(newValue.subtract(oldValue));
 
         repo.save(h);
     }

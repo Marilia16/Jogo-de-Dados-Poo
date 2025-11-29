@@ -110,7 +110,7 @@
         </div>
 
         <!-- ============ AÇÕES DO CRIADOR ============ -->
-        <div class="mt-5 p-3 border rounded">
+        <div class="mt-5 p-3 border rounded" th:if="${currentUserEntity != null and currentUserEntity.id == bet.user.id}">
 
             <div th:if="${currentUserEntity != null and currentUserEntity.id == bet.user.id}">
                 <h4 class="mb-3">Ações do Criador</h4>
@@ -162,7 +162,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body text-danger">
                 <p>❌ A aposta exige no mínimo <strong>2 participantes</strong>.</p>
             </div>
 

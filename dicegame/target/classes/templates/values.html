@@ -41,24 +41,30 @@
                 <tr th:each="h : ${history}">
                     <td th:text="${h.id}"></td>
 
-                    <td th:text="${#numbers.formatDecimal(h.oldValue, 1, 'POINT', 2, 'COMMA')}"></td>
-                    <td th:text="${#numbers.formatDecimal(h.newValue, 1, 'POINT', 2, 'COMMA')}"></td>
+                    <!-- oldValue -->
+                    <td th:text="${h.oldValue != null ? #numbers.formatDecimal(h.oldValue, 1, 2) : '0.00'}"></td>
 
-                    <!-- exibe a variação já calculada no model -->
+                    <!-- newValue -->
+                    <td th:text="${h.newValue != null ? #numbers.formatDecimal(h.newValue, 1, 2) : '0.00'}"></td>
+
+                    <!-- diff -->
                     <td>
+
                         <span th:if="${h.diff > 0}"
-                              class="text-success fw-bold"
-                              th:text="'+' + #numbers.formatDecimal(h.diff, 1, 'POINT', 2, 'COMMA')"></span>
+                            class="text-success fw-bold"
+                            th:text="|+${#numbers.formatDecimal(h.diff, 1, 2)}|"></span>
 
                         <span th:if="${h.diff < 0}"
-                              class="text-danger fw-bold"
-                              th:text="${#numbers.formatDecimal(h.diff, 1, 'POINT', 2, 'COMMA')}"></span>
+                            class="text-danger fw-bold"
+                            th:text="${#numbers.formatDecimal(h.diff, 1, 2)}"></span>
 
                         <span th:if="${h.diff == 0}"
-                              class="text-warning fw-bold">0.00</span>
+                            class="text-warning fw-bold">0.00</span>
+
                     </td>
 
                     <td th:text="${h.reason}"></td>
+
                     <td th:text="${#temporals.format(h.changedAt, 'dd/MM/yyyy HH:mm')}"></td>
                 </tr>
                 </tbody>

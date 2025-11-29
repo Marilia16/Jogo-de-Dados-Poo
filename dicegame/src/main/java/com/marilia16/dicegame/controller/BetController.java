@@ -7,11 +7,13 @@ import com.marilia16.dicegame.model.User;
 import com.marilia16.dicegame.repository.*;
 import com.marilia16.dicegame.service.BetResultService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -90,28 +92,42 @@ public class BetController {
     }
 
     @PostMapping("/bets/{betId}/finalize")
-    public String finalizeBet(@PathVariable Long betId,
-                              @AuthenticationPrincipal UserDetails currentUser) {
+public String finalizeBet(@PathVariable Long betId,
+                          @AuthenticationPrincipal UserDetails currentUser) {
 
-        Bet bet = betRepository.findById(betId)
-                .orElseThrow(() -> new RuntimeException("Aposta não encontrada."));
+    Bet bet = betRepository.findById(betId)
+            .orElseThrow(() -> new RuntimeException("Aposta não encontrada."));
 
-        if (!bet.getUser().getEmail().equals(currentUser.getUsername())) {
-            throw new AccessDeniedException("Apenas o criador da aposta pode finalizá-la.");
-        }
-
-        if (Boolean.TRUE.equals(bet.getFinalized())) {
-            return "redirect:/bets/" + betId + "?error=alreadyFinalized";
-        }
-
-        try {
-            betResultService.finalizeBet(bet);
-        } catch (RuntimeException e) {
-            return "redirect:/bets/" + betId + "?error=" + e.getMessage();
-        }
-
-        return "redirect:/bets/" + betId + "?success=finalized";
+    if (!bet.getUser().getEmail().equals(currentUser.getUsername())) {
+        throw new AccessDeniedException("Apenas o criador da aposta pode finalizá-la.");
     }
+
+    if (Boolean.TRUE.equals(bet.getFinalized())) {
+        return "redirect:/bets/" + betId + "?error=alreadyFinalized";
+    }
+
+    try {
+        betResultService.finalizeBet(bet);
+
+    } catch (RuntimeException e) {
+
+        String msg = e.getMessage().toLowerCase();
+
+        // ERRO ESPECÍFICO DE POUCOS PARTICIPANTES
+        if (msg.contains("mínimo 2 participantes") ||
+            msg.contains("pelo menos 2 jogadores") ||
+            msg.contains("2 participantes")) {
+
+            return "redirect:/bets/" + betId + "?error=minimum_participants";
+        }
+
+        // ERRO DESCONHECIDO
+        return "redirect:/bets/" + betId + "?error=unknown";
+    }
+
+    return "redirect:/bets/" + betId + "?success=finalized";
+}
+
 
     @GetMapping("/bets/{betId}/edit")
     public String editBet(@PathVariable Long betId,
@@ -146,4 +162,20 @@ public class BetController {
 
         return "redirect:/bets";
     }
+   @PostMapping("/bets/{betId}/delete")
+        public String deleteBet(@PathVariable Long betId, @AuthenticationPrincipal UserDetails currentUser) {
+
+    Bet bet = betRepository.findById(betId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Aposta não encontrada"));
+
+    
+    if (!bet.getUser().getEmail().equals(currentUser.getUsername())) {
+        throw new AccessDeniedException("Você não pode deletar esta aposta.");
+    }
+
+    betRepository.delete(bet);
+
+    return "redirect:/bets?deleted=true";
+}
+
 }

@@ -22,8 +22,8 @@ public class UserValueHistory {
     @Column(name = "new_value", nullable = false)
     private BigDecimal newValue;
 
-    @Column(name = "diff", nullable = false)
-    private BigDecimal diff; // << NOVO ATRIBUTO
+    @Column(name = "diff")
+    private BigDecimal diff; 
 
     @Column(name = "reason", nullable = false)
     private String reason;

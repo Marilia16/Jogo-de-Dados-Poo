@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.ui.Model;
@@ -26,4 +27,19 @@ public class GlobalControllerAdvice {
         }
         model.addAttribute("currentPath", request.getRequestURI());
     }
+    @ExceptionHandler(RuntimeException.class)
+    public String handleRuntimeException(RuntimeException ex, Model model, HttpServletRequest request) {
+
+        model.addAttribute("errorMessage", ex.getMessage());
+
+        // volta para a página anterior
+        String referer = request.getHeader("Referer");
+        if (referer != null) {
+            model.addAttribute("backUrl", referer);
+            return "custom_error";
+        }
+
+        return "custom_error";
+    }
+
 }

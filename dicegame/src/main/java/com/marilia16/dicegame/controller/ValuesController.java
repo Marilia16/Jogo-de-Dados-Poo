@@ -42,7 +42,7 @@ public class ValuesController {
             map.put("newValue", h.getNewValue());
             map.put("reason", h.getReason());
             map.put("changedAt", h.getChangedAt());
-            map.put("diff", h.getNewValue().subtract(h.getOldValue()));
+            map.put("diff", h.getDiff());
             return map;
         }).toList();
 

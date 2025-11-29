@@ -53,7 +53,6 @@
 
         .btn {
             width: 100%;
-            background-color: #4caf50;
             padding: 12px;
             text-align: center;
             border: none;
@@ -64,8 +63,21 @@
             font-weight: 600;
         }
 
-        .btn:hover {
+        .btn-save {
+            background-color: #4caf50;
+        }
+
+        .btn-save:hover {
             background-color: #46a049;
+        }
+
+        .btn-delete {
+            background-color: #d9534f;
+            margin-top: 15px;
+        }
+
+        .btn-delete:hover {
+            background-color: #c9302c;
         }
 
         .cancel {
@@ -87,11 +99,17 @@
 <div class="container">
     <h2>Editar Aposta</h2>
 
+    <!-- Formulário de edição -->
     <form th:action="@{'/bets/' + ${bet.id} + '/edit'}" method="post">
         <label for="name">Nome da Aposta</label>
         <input type="text" id="name" name="name" th:value="${bet.name}" required>
 
-        <button type="submit" class="btn">Salvar Alterações</button>
+        <button type="submit" class="btn btn-save">Salvar Alterações</button>
+    </form>
+
+    <!-- Formulário separado para deletar -->
+    <form th:action="@{'/bets/' + ${bet.id} + '/delete'}" method="post">
+        <button type="submit" class="btn btn-delete">Excluir Aposta</button>
     </form>
 
     <a th:href="@{'/bets'}" class="cancel">Cancelar e voltar</a>

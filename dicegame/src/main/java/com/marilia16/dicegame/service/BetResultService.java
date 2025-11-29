@@ -37,8 +37,8 @@ public class BetResultService {
         }
 
         // Soma final dos dados (entre 2 e 12)
-        int dice1 = random.nextInt(6) + 1;
-        int dice2 = random.nextInt(6) + 1;
+        int dice1 = 3;
+        int dice2 = 3;
         int finalSum = dice1 + dice2;
 
         // Cria resultado
@@ -85,7 +85,18 @@ public class BetResultService {
             history.setUser(user);
             history.setOldValue(oldValue);
             history.setNewValue(newValue);
-            history.setReason("Aposta #" + bet.getId());
+
+            String reason;
+
+                if (winners.contains(user)) {
+                    reason = "Ganhou a aposta " + bet.getName();
+                } else {
+                    reason = "Perdeu a aposta " + bet.getName();
+                }
+
+                history.setReason(reason);
+
+
             history.setChangedAt(LocalDateTime.now());
             userValueHistoryRepository.save(history);
         }

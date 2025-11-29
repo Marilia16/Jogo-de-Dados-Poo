@@ -44,25 +44,32 @@ public class GambleController {
 
     @PostMapping("/{betId}/lance")
     public String placeGamble(@PathVariable Long betId,
-                              @RequestParam("valueGuess") Integer valueGuess,
-                              @RequestParam("valueMoney") Double valueMoney,
-                              @AuthenticationPrincipal UserDetails currentUser) {
+                            @RequestParam("valueGuess") Integer valueGuess,
+                            @RequestParam("valueMoney") Double valueMoney,
+                            @AuthenticationPrincipal UserDetails currentUser) {
 
         Bet bet = betRepository.findById(betId)
-                .orElseThrow(() -> new RuntimeException("Aposta não encontrada"));
+                .orElseThrow(() -> new RuntimeException("Aposta não encontrada."));
 
         User user = userRepository.findByEmail(currentUser.getUsername())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
-        if (valueGuess < 2 || valueGuess > 12)
-            throw new RuntimeException("Palpite deve estar entre 2 e 12");
+        // valida palpite
+        if (valueGuess < 2 || valueGuess > 12) {
+            throw new RuntimeException("O palpite deve estar entre 2 e 12.");
+        }
 
-        if (valueMoney <= 0)
-            throw new RuntimeException("Valor da aposta deve ser maior que zero");
+        // valida valor da aposta
+        if (valueMoney <= 0) {
+            throw new RuntimeException("O valor da aposta deve ser maior que zero.");
+        }
 
-        if (gambleRepository.findByBetAndUser(bet, user).isPresent())
-            throw new RuntimeException("Usuário já participou dessa aposta");
+        // evita duplicidade
+        if (gambleRepository.findByBetAndUser(bet, user).isPresent()) {
+            throw new RuntimeException("Você já participou desta aposta.");
+        }
 
+        // cria aposta
         Gamble gamble = new Gamble();
         gamble.setBet(bet);
         gamble.setUser(user);
@@ -74,4 +81,5 @@ public class GambleController {
 
         return "redirect:/gamble/" + betId;
     }
+
 }
